@@ -1,42 +1,7 @@
 require 'byebug'
-
-class Inventory
-
-  attr_accessor :funds, :sugar, :lemons, :cups, :lemon_price, :sugar_price, :lemonade_price
-
-  def initialize
-    @lemons = 0
-    @funds = 5 #in dollars
-    @sugar = 0
-    @cups = 0
-    @market = Market.new
-    @lemon_price = 0
-  end
-
-  def make_lemonade(quantity)
-    @sugar -= quantity
-    @lemons -= quantity
-    @cups += quantity
-  end
-
-  def set_lemon_price
-    @lemon_price = @market.calculate_lemon_price
-  end
-
-  def set_sugar_price
-    @sugar_price = @market.calculate_sugar_price
-  end
-
-  def purchase_lemons(quantity)
-      @lemons += quantity
-      @funds -= @lemon_price * quantity
-  end
-
-  def purchase_sugar(quantity)
-      @sugar += quantity
-      @funds -= @sugar_price * quantity
-  end
-end
+require_relative 'validation.rb'
+require_relative 'inventory.rb'
+require_relative 'market.rb'
 
 class LemonadeStand
   def initialize
@@ -135,34 +100,9 @@ class LemonadeStand
   end
 end
 
-class Market
 
-  def calculate_lemon_price
-    Random.new.rand(0.25..0.50).round(2) #returns random number between 0.25-0.5 rounded to the nearest 2dp
-  end
 
-  def calculate_sugar_price
-    Random.new.rand(0.02..0.05).round(2) #returns random number between 0.02-0.05 rounded to the nearest 2dp
-  end
-end
 
-class Validation
-  def can_afford?(funds, price, quantity)
-    if price * quantity < funds
-      true
-    else
-      false
-    end
-  end
-
-  def can_make_lemonade?(lemons, sugar, quantity)
-    if quantity <= [lemons, sugar].min
-      true
-    else
-      false
-    end
-  end
-end
 
 game_instance = LemonadeStand.new
 game_instance.play_game
