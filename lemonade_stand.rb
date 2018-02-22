@@ -2,34 +2,14 @@ require 'byebug'
 require_relative 'validation.rb'
 require_relative 'inventory.rb'
 require_relative 'market.rb'
+require_relative 'user_output.rb'
 
 class LemonadeStand
   def initialize
     @inventory = Inventory.new
     @validation = Validation.new
+    @user_output = UserOutput.new
     @day_counter = 0
-  end
-
-  def user_output(event)
-    case event
-    when :play_game
-      @day_counter += 1
-      puts "\nWelcome to Day #{@day_counter}"
-      puts "You currently have $#{@inventory.funds.round(2)}, #{@inventory.lemons} lemons and #{@inventory.sugar} sugar"
-    when :purchase_lemons
-      maximum_lemons = (@inventory.funds / @inventory.lemon_price).round(2)
-      puts "Lemons are currently $#{@inventory.lemon_price}. How many would you like to buy (Maximum: #{maximum_lemons})?"
-    when :purchase_sugar
-      maximum_sugar = (@inventory.funds / @inventory.sugar_price).round(2)
-      puts "Sugar is currently $#{@inventory.sugar_price}. How many would you like to buy (Maximum: #{maximum_sugar})?"
-    when :make_lemonade
-      maximum_cups = [@inventory.lemons, @inventory.sugar].min
-      puts "How many cups of lemonade would you like to make? (Maximum: #{maximum_cups})"
-    when :set_lemonade_price
-      puts "How much would you like to charge per cup of lemonade?"
-    else
-      puts "Invalid Method"
-    end
   end
 
   def validate_user_input(input)
@@ -43,30 +23,33 @@ class LemonadeStand
   end
 
   def purchase_lemons
-    user_output(__method__)
+    maximum_lemons = (@inventory.funds / @inventory.lemon_price).round(2)
+    @user_output.purchase_lemons_output(@inventory.lemon_price, maximum_lemons)
     quantity = get_input
     while !@validation.can_afford?(@inventory.funds, @inventory.lemon_price, quantity)
-      puts "Can't afford that many lemons. Enter new amount: "
+      @user_output.cant_afford("many lemons")
       quantity = get_input
     end
     @inventory.purchase_lemons(quantity)
   end
 
   def purchase_sugar
-    user_output(__method__)
+    maximum_sugar = (@inventory.funds / @inventory.sugar_price).round(2)
+    @user_output.purchase_sugar_output(@inventory.sugar_price, maximum_sugar)
     quantity = get_input
     while !@validation.can_afford?(@inventory.funds, @inventory.sugar_price, quantity)
-      puts "Can't afford that much sugar. Enter new amount: "
+      @user_output.cant_afford("much sugar")
       quantity = get_input
     end
     @inventory.purchase_sugar(quantity)
   end
 
   def make_lemonade
-    user_output(__method__)
+    maximum_cups = [@inventory.lemons, @inventory.sugar].min
+    @user_output.make_lemonade_output(maximum_cups)
     quantity = get_input
     while !@validation.can_make_lemonade?(@inventory.lemons, @inventory.sugar, quantity)
-      puts "Can't make that many cups. Enter new amount: "
+      @user_output.cant_make("cups")
       quantity = get_input
     end
     @inventory.make_lemonade(quantity)
@@ -82,15 +65,15 @@ class LemonadeStand
   end
 
   def set_lemonade_price
-    user_output(__method__)
+    @user_output.set_lemonade_price_output
     price = get_input
     @inventory.lemonade_price = price
-    puts "You are selling #{@inventory.cups} cups at $#{price} each."
+    @user_output.lemonade_confirmation_output(@inventory.cups, price)
   end
 
   def play_game
     while user_has_funds do #TODO: extrapolate to own boolean method
-      user_output(__method__)
+      @user_output.new_day_output(@inventory.funds, @inventory.lemons, @inventory.sugar)
       set_market_prices
       purchase_lemons
       purchase_sugar
@@ -106,6 +89,11 @@ end
 
 game_instance = LemonadeStand.new
 game_instance.play_game
+
+
+@inventory.item_price
+
+@inventory.send("#{item}_price".to_sym)
 
 
 #Start of day (Initialize)
