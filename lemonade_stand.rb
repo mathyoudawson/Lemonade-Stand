@@ -4,6 +4,7 @@ require_relative 'inventory.rb'
 require_relative 'market.rb'
 require_relative 'user_output.rb'
 require_relative 'climate.rb'
+require_relative 'population_counter.rb'
 
 class LemonadeStand
   def initialize
@@ -13,6 +14,7 @@ class LemonadeStand
     @climate = Climate.new
     @temperature = @climate.generate_initial_temperature
     @day_counter = 0
+    @population_counter = PopulationCounter.new
   end
 
   def validate_user_input(input)
@@ -78,6 +80,10 @@ class LemonadeStand
     @temperature = @climate.generate_new_temperature(@temperature)
   end
 
+  def generate_population
+    @daily_population_counter = @population_counter.generate_population(@temperature)
+  end
+
   def play_game
     while user_has_funds do #TODO: extrapolate to own boolean method
       @user_output.new_day_output(@inventory.funds, @inventory.lemons, @inventory.sugar)
@@ -86,6 +92,9 @@ class LemonadeStand
       purchase_sugar
       make_lemonade
       set_lemonade_price
+      generate_population
+      puts "Population for Day: #{@day_counter} is #{@daily_population_counter}"
+      #last:
       puts "Temperature: #{@temperature} degrees"
       update_temperature
       puts "Updated temperature: #{@temperature}"
