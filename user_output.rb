@@ -8,7 +8,7 @@ class UserOutput
   def new_day_output(funds, lemons, sugar)
     @day_counter += 1
     puts "\nWelcome to Day #{@day_counter}"
-    puts "You currently have $#{funds}, #{lemons} lemons and #{sugar} sugar"
+    puts "You currently have $#{funds.round(2)}, #{lemons} lemons and #{sugar} sugar"
   end
 
   def purchase_lemons_output(price, maximum_lemons)
