@@ -3,12 +3,15 @@ require_relative 'validation.rb'
 require_relative 'inventory.rb'
 require_relative 'market.rb'
 require_relative 'user_output.rb'
+require_relative 'climate.rb'
 
 class LemonadeStand
   def initialize
     @inventory = Inventory.new
     @validation = Validation.new
     @user_output = UserOutput.new
+    @climate = Climate.new
+    @temperature = @climate.generate_initial_temperature
     @day_counter = 0
   end
 
@@ -71,6 +74,10 @@ class LemonadeStand
     @user_output.lemonade_confirmation_output(@inventory.cups, price)
   end
 
+  def update_temperature
+    @temperature = @climate.generate_new_temperature(@temperature)
+  end
+
   def play_game
     while user_has_funds do #TODO: extrapolate to own boolean method
       @user_output.new_day_output(@inventory.funds, @inventory.lemons, @inventory.sugar)
@@ -79,22 +86,18 @@ class LemonadeStand
       purchase_sugar
       make_lemonade
       set_lemonade_price
+      puts "Temperature: #{@temperature} degrees"
+      update_temperature
+      puts "Updated temperature: #{@temperature}"
     end
   end
 end
 
-
-
-
-
 game_instance = LemonadeStand.new
 game_instance.play_game
 
-
 @inventory.item_price
-
 @inventory.send("#{item}_price".to_sym)
-
 
 #Start of day (Initialize)
 
