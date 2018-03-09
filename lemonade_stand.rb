@@ -14,12 +14,12 @@ class LemonadeStand
     @climate = Climate.new
     @temperature = @climate.generate_initial_temperature
     @day_counter = 0
-    @population_counter = PopulationCounter.new
+    @population = Population.new
   end
 
   def validate_user_input(input)
-       get_input unless input.match?(/^\d+$/)
-       input.to_i
+    get_input unless input.match?(/^\d+$/)
+    input.to_i
   end
 
   def get_input
@@ -31,8 +31,8 @@ class LemonadeStand
     maximum_lemons = (@inventory.funds / @inventory.lemon_price).round(2)
     @user_output.purchase_lemons_output(@inventory.lemon_price, maximum_lemons)
     quantity = get_input
-    while !@validation.can_afford?(@inventory.funds, @inventory.lemon_price, quantity)
-      @user_output.cant_afford("many lemons")
+    until @validation.can_afford?(@inventory.funds, @inventory.lemon_price, quantity)
+      @user_output.cant_afford('many lemons')
       quantity = get_input
     end
     @inventory.purchase_lemons(quantity)
@@ -42,8 +42,8 @@ class LemonadeStand
     maximum_sugar = (@inventory.funds / @inventory.sugar_price).round(2)
     @user_output.purchase_sugar_output(@inventory.sugar_price, maximum_sugar)
     quantity = get_input
-    while !@validation.can_afford?(@inventory.funds, @inventory.sugar_price, quantity)
-      @user_output.cant_afford("much sugar")
+    until @validation.can_afford?(@inventory.funds, @inventory.sugar_price, quantity)
+      @user_output.cant_afford('much sugar')
       quantity = get_input
     end
     @inventory.purchase_sugar(quantity)
@@ -53,8 +53,8 @@ class LemonadeStand
     maximum_cups = [@inventory.lemons, @inventory.sugar].min
     @user_output.make_lemonade_output(maximum_cups)
     quantity = get_input
-    while !@validation.can_make_lemonade?(@inventory.lemons, @inventory.sugar, quantity)
-      @user_output.cant_make("cups")
+    until @validation.can_make_lemonade?(@inventory.lemons, @inventory.sugar, quantity)
+      @user_output.cant_make('cups')
       quantity = get_input
     end
     @inventory.make_lemonade(quantity)
@@ -77,27 +77,31 @@ class LemonadeStand
   end
 
   def update_temperature
-    @temperature = @climate.generate_new_temperature(@temperature)
+    @climate.generate_new_temperature(@temperature)
   end
 
   def generate_population
-    @daily_population_counter = @population_counter.generate_population(@temperature)
+    @population.generate_population(@temperature)
+  end
+
+  def sell_lemonade
+    @population.calculate_population_consumer_ratio(@inventory.lemonade_price)
   end
 
   def play_game
-    while user_has_funds do #TODO: extrapolate to own boolean method
-      @user_output.new_day_output(@inventory.funds, @inventory.lemons, @inventory.sugar)
+    while user_has_funds # TODO: extrapolate to own boolean method
+      @user_output.new_day_output(@inventory.funds, @inventory.lemons, @inventory.sugar, @climate.temperature)
       set_market_prices
       purchase_lemons
       purchase_sugar
       make_lemonade
       set_lemonade_price
       generate_population
-      puts "Population for Day: #{@day_counter} is #{@daily_population_counter}"
-      #last:
-      puts "Temperature: #{@temperature} degrees"
+      puts 'Population for Day: ' + @day_counter.to_s + ' is ' + @population.population_counter.to_s
+      puts "Temperature: #{@climate.temperature} degrees"
       update_temperature
-      puts "Updated temperature: #{@temperature}"
+      puts "Updated temperature: #{@climate.temperature}"
+      sell_lemonade
     end
   end
 end
@@ -108,25 +112,25 @@ game_instance.play_game
 @inventory.item_price
 @inventory.send("#{item}_price".to_sym)
 
-#Start of day (Initialize)
+# Start of day (Initialize)
 
-#You start the game with $5, 0 lemons, 0 sugar, and 0 cups of lemonade
-#while the user has funds
-#buy lemons (25-50 cents each)
-#buy sugar (2-5 cents per unit)
-#Make some cups of lemonade (user decides how many) - 1 sugar and 1 lemon to make
-#set price for lemonade
+# You start the game with $5, 0 lemons, 0 sugar, and 0 cups of lemonade
+# while the user has funds
+# buy lemons (25-50 cents each)
+# buy sugar (2-5 cents per unit)
+# Make some cups of lemonade (user decides how many) - 1 sugar and 1 lemon to make
+# set price for lemonade
 
-#Day plays out
+# Day plays out
 
-#Temperature for day selected (relative to previous day)
-#Number of people who walk by stand is based on Temperature
-#Number of cups sold is based on people + price
-#Any cups not sold are discarded
+# Temperature for day selected (relative to previous day)
+# Number of people who walk by stand is based on Temperature
+# Number of cups sold is based on people + price
+# Any cups not sold are discarded
 
-#End of Day
+# End of Day
 
-#Show profit/loss
+# Show profit/loss
 
 # Classes
 #

@@ -1,10 +1,9 @@
 class Inventory
-
   attr_accessor :funds, :sugar, :lemons, :cups, :lemon_price, :sugar_price, :lemonade_price
 
   def initialize
     @lemons = 0
-    @funds = 5 #in dollars
+    @funds = 5 # in dollars
     @sugar = 0
     @cups = 0
     @market = Market.new
@@ -26,12 +25,12 @@ class Inventory
   end
 
   def purchase_lemons(quantity)
-      @lemons += quantity
-      @funds -= @lemon_price * quantity
+    @lemons += quantity
+    @funds -= @lemon_price * quantity
   end
 
   def purchase_sugar(quantity)
-      @sugar += quantity
-      @funds -= @sugar_price * quantity
+    @sugar += quantity
+    @funds -= @sugar_price * quantity
   end
 end
