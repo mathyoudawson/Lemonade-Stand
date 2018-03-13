@@ -4,7 +4,7 @@ require_relative 'inventory.rb'
 require_relative 'market.rb'
 require_relative 'user_output.rb'
 require_relative 'climate.rb'
-require_relative 'population_counter.rb'
+require_relative 'population.rb'
 
 class LemonadeStand
   def initialize
@@ -17,23 +17,33 @@ class LemonadeStand
     @population = Population.new
   end
 
-  def validate_user_input(input)
-    get_input unless input.match?(/^\d+$/)
-    input.to_i
-  end
+  # def validate_user_input(user_input)
+  #   until user_input.match?(/^\d+$/)
+  #     puts "enter valid input"
+  #     user_input = retrieve_input
+  #   end
 
-  def get_input
+  #   user_input
+  # end
+
+  def retrieve_input
     user_input = gets.chomp
-    validate_user_input(user_input)
+
+    until user_input.match?(/^\d+$/)
+      puts "enter valid input"
+      user_input = gets.chomp
+    end
+
+    user_input.to_i
   end
 
   def purchase_lemons
     maximum_lemons = (@inventory.funds / @inventory.lemon_price).round(2)
     @user_output.purchase_lemons_output(@inventory.lemon_price, maximum_lemons)
-    quantity = get_input
+    quantity = retrieve_input
     until @validation.can_afford?(@inventory.funds, @inventory.lemon_price, quantity)
       @user_output.cant_afford('many lemons')
-      quantity = get_input
+      quantity = retrieve_input
     end
     @inventory.purchase_lemons(quantity)
   end
@@ -41,10 +51,10 @@ class LemonadeStand
   def purchase_sugar
     maximum_sugar = (@inventory.funds / @inventory.sugar_price).round(2)
     @user_output.purchase_sugar_output(@inventory.sugar_price, maximum_sugar)
-    quantity = get_input
+    quantity = retrieve_input
     until @validation.can_afford?(@inventory.funds, @inventory.sugar_price, quantity)
       @user_output.cant_afford('much sugar')
-      quantity = get_input
+      quantity = retrieve_input
     end
     @inventory.purchase_sugar(quantity)
   end
@@ -52,10 +62,10 @@ class LemonadeStand
   def make_lemonade
     maximum_cups = [@inventory.lemons, @inventory.sugar].min
     @user_output.make_lemonade_output(maximum_cups)
-    quantity = get_input
+    quantity = retrieve_input
     until @validation.can_make_lemonade?(@inventory.lemons, @inventory.sugar, quantity)
       @user_output.cant_make('cups')
-      quantity = get_input
+      quantity = retrieve_input
     end
     @inventory.make_lemonade(quantity)
   end
@@ -71,7 +81,7 @@ class LemonadeStand
 
   def set_lemonade_price
     @user_output.set_lemonade_price_output
-    price = get_input
+    price = retrieve_input
     @inventory.lemonade_price = price
     @user_output.lemonade_confirmation_output(@inventory.cups, price)
   end

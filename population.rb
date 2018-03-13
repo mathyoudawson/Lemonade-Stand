@@ -5,8 +5,7 @@ class Population
   end
 
   def calculate_population_consumer_ratio(price)
-    ratio = (10 - price) * 0.1
-    consumer_ratio = @population_counter * ratio
-    ratio = 0 if ratio < 0
+    ratio = @population_counter * (10 - price) * 0.1
+    ratio < 0 ? 0 : ratio
   end
 end
