@@ -10,6 +10,12 @@ class Inventory
     @lemon_price = 0
   end
 
+  def make_sale(consumers)
+    cups_sold = [consumers, cups].min # returns the maximum number of cups sold (either the lowest amount of paying consumers or the amount of cups for sale)
+    @funds += cups_sold * @lemonade_price
+    @cups = 0
+  end
+
   def make_lemonade(quantity)
     @sugar -= quantity
     @lemons -= quantity

@@ -30,7 +30,7 @@ class LemonadeStand
     user_input = gets.chomp
 
     until user_input.match?(/^\d+$/)
-      puts "enter valid input"
+      @user_output.invalid_input
       user_input = gets.chomp
     end
 
@@ -95,7 +95,8 @@ class LemonadeStand
   end
 
   def sell_lemonade
-    @population.calculate_population_consumer_ratio(@inventory.lemonade_price)
+    consumers = @population.calculate_population_consumer_ratio(@inventory.lemonade_price)
+    @inventory.make_sale(consumers)
   end
 
   def play_game
@@ -108,19 +109,16 @@ class LemonadeStand
       set_lemonade_price
       generate_population
       puts 'Population for Day: ' + @day_counter.to_s + ' is ' + @population.population_counter.to_s
-      puts "Temperature: #{@climate.temperature} degrees"
-      update_temperature
-      puts "Updated temperature: #{@climate.temperature}"
       sell_lemonade
+      puts "Funds are now at #{@inventory.funds} while cups are at #{@inventory.cups}"
+
+      update_temperature
     end
   end
 end
 
 game_instance = LemonadeStand.new
 game_instance.play_game
-
-@inventory.item_price
-@inventory.send("#{item}_price".to_sym)
 
 # Start of day (Initialize)
 

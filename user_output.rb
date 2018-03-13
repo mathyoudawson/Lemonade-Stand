@@ -38,4 +38,8 @@ class UserOutput
   def cant_afford(item)
     puts "Can't afford that #{item}. Enter new amount: "
   end
+
+  def invalid_input
+    puts 'Please enter valid input'
+  end
 end
