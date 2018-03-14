@@ -6,6 +6,6 @@ class Population
 
   def calculate_population_consumer_ratio(price)
     ratio = @population_counter * (10 - price) * 0.1
-    ratio < 0 ? 0 : ratio
+    ratio.negative? ? 0 : ratio
   end
 end

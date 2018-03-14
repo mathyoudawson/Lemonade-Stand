@@ -39,6 +39,11 @@ class UserOutput
     puts "Can't afford that #{item}. Enter new amount: "
   end
 
+  def end_of_day_output(day_counter, population_counter, consumers)
+    puts "\nDay #{day_counter} summary"
+    puts "Total actual customers out of potential customers: #{consumers}/#{population_counter}"
+  end
+
   def invalid_input
     puts 'Please enter valid input'
   end

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'byebug'
 require_relative 'validation.rb'
 require_relative 'inventory.rb'
@@ -71,10 +73,11 @@ class LemonadeStand
   end
 
   def user_has_funds
-    @inventory.funds > 0
+    @inventory.funds.positive?
   end
 
   def set_market_prices
+    @user_output.new_day_output(@inventory.funds, @inventory.lemons, @inventory.sugar, @climate.temperature)
     @inventory.set_lemon_price
     @inventory.set_sugar_price
   end
@@ -97,21 +100,18 @@ class LemonadeStand
   def sell_lemonade
     consumers = @population.calculate_population_consumer_ratio(@inventory.lemonade_price)
     @inventory.make_sale(consumers)
+    @user_output.end_of_day_output(@day_counter.to_s, @population.population_counter.to_s, consumers)
   end
 
   def play_game
     while user_has_funds # TODO: extrapolate to own boolean method
-      @user_output.new_day_output(@inventory.funds, @inventory.lemons, @inventory.sugar, @climate.temperature)
       set_market_prices
       purchase_lemons
       purchase_sugar
       make_lemonade
       set_lemonade_price
       generate_population
-      puts 'Population for Day: ' + @day_counter.to_s + ' is ' + @population.population_counter.to_s
       sell_lemonade
-      puts "Funds are now at #{@inventory.funds} while cups are at #{@inventory.cups}"
-
       update_temperature
     end
   end
