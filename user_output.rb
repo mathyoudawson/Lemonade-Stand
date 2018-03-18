@@ -1,12 +1,13 @@
+# frozen_string_literal: true
+
 class UserOutput
   attr_accessor :day_counter
   def initialize
-    @day_counter = 0
+    # @day_counter = 0
   end
 
-  def new_day_output(funds, lemons, sugar, temperature)
-    @day_counter += 1
-    puts "\nWelcome to Day #{@day_counter}"
+  def start_of_day_output(funds, lemons, sugar, temperature, day_counter)
+    puts "\nWelcome to Day #{day_counter}"
     puts "It is currently #{temperature} degrees out"
     puts "You currently have $#{funds.round(2)}, #{lemons} lemons and #{sugar} sugar \n"
   end

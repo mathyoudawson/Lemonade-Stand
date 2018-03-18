@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Population
   attr_accessor :population_counter
   def generate_population(temperature)

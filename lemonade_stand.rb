@@ -15,7 +15,7 @@ class LemonadeStand
     @user_output = UserOutput.new
     @climate = Climate.new
     @temperature = @climate.generate_initial_temperature
-    @day_counter = 0
+    @day_counter = 1
     @population = Population.new
   end
 
@@ -72,12 +72,12 @@ class LemonadeStand
     @inventory.make_lemonade(quantity)
   end
 
-  def user_has_funds
+  def funds?
     @inventory.funds.positive?
   end
 
   def set_market_prices
-    @user_output.new_day_output(@inventory.funds, @inventory.lemons, @inventory.sugar, @climate.temperature)
+    @user_output.start_of_day_output(@inventory.funds, @inventory.lemons, @inventory.sugar, @climate.temperature, @day_counter)
     @inventory.set_lemon_price
     @inventory.set_sugar_price
   end
@@ -101,10 +101,11 @@ class LemonadeStand
     consumers = @population.calculate_population_consumer_ratio(@inventory.lemonade_price)
     @inventory.make_sale(consumers)
     @user_output.end_of_day_output(@day_counter.to_s, @population.population_counter.to_s, consumers)
+    @day_counter += 1
   end
 
   def play_game
-    while user_has_funds # TODO: extrapolate to own boolean method
+    while funds?
       set_market_prices
       purchase_lemons
       purchase_sugar
@@ -120,31 +121,3 @@ end
 game_instance = LemonadeStand.new
 game_instance.play_game
 
-# Start of day (Initialize)
-
-# You start the game with $5, 0 lemons, 0 sugar, and 0 cups of lemonade
-# while the user has funds
-# buy lemons (25-50 cents each)
-# buy sugar (2-5 cents per unit)
-# Make some cups of lemonade (user decides how many) - 1 sugar and 1 lemon to make
-# set price for lemonade
-
-# Day plays out
-
-# Temperature for day selected (relative to previous day)
-# Number of people who walk by stand is based on Temperature
-# Number of cups sold is based on people + price
-# Any cups not sold are discarded
-
-# End of Day
-
-# Show profit/loss
-
-# Classes
-#
-# Inventory: holds lemon + sugar inventory + $ balance + lemonade made
-# Day: simulates the day
-# Lifecycle: holds multiple days
-# PopulationCounter: works out how many people walk past
-# Climate: works out how hot the day is based on the last one
-# Market: calculates lemon + sugar prices
