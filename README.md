@@ -2,7 +2,7 @@
 
 Lemonade-Stand is a simple game designed to improve my Ruby skills.
 
-#How it Works:
+# How it Works:
 
 Start of day
 You start the game with $5, 0 lemons, 0 sugar, and 0 cups of lemonade
