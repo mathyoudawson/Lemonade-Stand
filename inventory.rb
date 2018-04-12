@@ -39,4 +39,12 @@ class Inventory
     @sugar += quantity
     @funds -= @sugar_price * quantity
   end
+
+  def get_opening_funds
+    @intial_funds = @funds
+  end
+
+  def calculate_profit
+    @funds - @intial_funds #TODO: need to take into account costs. currently just revenue
+  end
 end

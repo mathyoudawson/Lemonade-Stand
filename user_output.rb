@@ -45,6 +45,10 @@ class UserOutput
     puts "Total actual customers out of potential customers: #{consumers}/#{population_counter}"
   end
 
+  def profit_loss_output(profit)
+    puts "You earned a total of $#{profit}"
+  end
+
   def invalid_input
     puts 'Please enter valid input'
   end

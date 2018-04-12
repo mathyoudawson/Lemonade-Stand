@@ -87,6 +87,7 @@ class LemonadeStand
     price = retrieve_input
     @inventory.lemonade_price = price
     @user_output.lemonade_confirmation_output(@inventory.cups, price)
+    @inventory.get_opening_funds
   end
 
   def update_temperature
@@ -104,6 +105,10 @@ class LemonadeStand
     @day_counter += 1
   end
 
+  def calculate_profit
+    @user_output.profit_loss_output(@inventory.calculate_profit) #TODO: need to take into account costs. currently just revenue
+  end
+
   def play_game
     while funds?
       set_market_prices
@@ -114,10 +119,10 @@ class LemonadeStand
       generate_population
       sell_lemonade
       update_temperature
+      calculate_profit
     end
   end
 end
 
 game_instance = LemonadeStand.new
 game_instance.play_game
-
