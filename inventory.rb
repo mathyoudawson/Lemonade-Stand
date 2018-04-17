@@ -32,12 +32,14 @@ class Inventory
 
   def purchase_lemons(quantity)
     @lemons += quantity
-    @funds -= @lemon_price * quantity
+    @lemon_costs = @lemon_price * quantity
+    @funds -= @lemon_costs
   end
 
   def purchase_sugar(quantity)
     @sugar += quantity
-    @funds -= @sugar_price * quantity
+    @sugar_costs = @sugar_price * quantity
+    @funds -= @sugar_costs
   end
 
   def get_opening_funds
@@ -45,6 +47,6 @@ class Inventory
   end
 
   def calculate_profit
-    @funds - @intial_funds #TODO: need to take into account costs. currently just revenue
+    @funds - (@intial_funds + @sugar_costs + @lemon_costs) #TODO: need to take into account costs. currently just revenue
   end
 end
