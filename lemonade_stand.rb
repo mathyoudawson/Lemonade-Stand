@@ -106,23 +106,6 @@ class LemonadeStand
   end
 
   def calculate_profit
-    @user_output.profit_loss_output(@inventory.calculate_profit) #TODO: need to take into account costs. currently just revenue
-  end
-
-  def play_game
-    while funds?
-      set_market_prices
-      purchase_lemons
-      purchase_sugar
-      make_lemonade
-      set_lemonade_price
-      generate_population
-      sell_lemonade
-      update_temperature
-      calculate_profit
-    end
+    @user_output.profit_loss_output(@inventory.calculate_profit) # TODO: need to take into account costs. currently just revenue
   end
 end
-
-game_instance = LemonadeStand.new
-game_instance.play_game
