@@ -12,6 +12,10 @@ class UserOutput
     puts "You currently have $#{funds.round(2)}, #{lemons} lemons and #{sugar} sugar \n"
   end
 
+  def purchase_output(price, maximum_items, item)
+    puts "#{item} price is current $#{price} How much would you like to buy (Maximum: #{maximum_items})"
+  end
+
   def purchase_lemons_output(price, maximum_lemons)
     puts "Lemons are currently $#{price}. How many would you like to buy (Maximum: #{maximum_lemons})?"
   end
@@ -37,7 +41,7 @@ class UserOutput
   end
 
   def cant_afford(item)
-    puts "Can't afford that #{item}. Enter new amount: "
+    puts "Can't afford #{quantity} #{item}. Enter new amount: "
   end
 
   def end_of_day_output(day_counter, population_counter, consumers)

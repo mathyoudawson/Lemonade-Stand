@@ -8,8 +8,10 @@ class LemonadeStandController
   def play_game
     while @game.funds?
       @game.set_market_prices
-      @game.purchase_lemons
-      @game.purchase_sugar
+      @game.purchase('lemon')
+      @game.purchase('sugar')
+      #@game.purchase_lemons
+      #@game.purchase_sugar
       @game.make_lemonade
       @game.set_lemonade_price
       @game.generate_population

@@ -39,6 +39,21 @@ class LemonadeStand
     user_input.to_i
   end
 
+  def purchase(item)
+    # TODO: implement this!!!
+    price = @inventory.get_price(item)
+    maximum_items = (@inventory.funds / price).round(2)
+    @user_output.purchase_output(price, maximum_items, item)
+    quantity = retrieve_input
+    until @validation.can_afford?(@inventory.funds, price, quantity)
+      @user_output.cant_afford(item, quantity)
+      quantity = retrieve_input
+    end
+    @inventory.purchase(item, quantity)
+  end
+
+  def purchase_shits(ingredient) end
+
   def purchase_lemons
     maximum_lemons = (@inventory.funds / @inventory.lemon_price).round(2)
     @user_output.purchase_lemons_output(@inventory.lemon_price, maximum_lemons)
