@@ -19,6 +19,7 @@ class Inventory
   end
 
   def make_lemonade(quantity)
+    # TODO: make this a service by using an object 
     @sugar -= quantity
     @lemons -= quantity
     @cups += quantity
