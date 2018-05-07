@@ -1,11 +1,11 @@
 require_relative 'lemonade_stand.rb'
 
 class LemonadeStandController
-
-  #attr_accessor :game
+  attr_reader :game
 
   def initialize
     @game = LemonadeStand.new
+    #play_game
   end
 
   def play_game
