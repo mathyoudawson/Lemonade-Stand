@@ -1,10 +1,21 @@
+require_relative 'random_generator.rb'
+require 'byebug'
+
 class Climate
-  attr_accessor :temperature
-  def generate_initial_temperature
-    @temperature = Random.new.rand(15..35).round(1)
+  TEMP_MIN = 15
+  TEMP_MAX = 35
+  TEMP_ROUND = 1
+  attr_accessor :temperature, :generate
+
+  def initialize(generate: RandomGenerator::Generate.new)
+    @generate = generate #RandomGenerator::Generate.new
   end
 
-  def generate_new_temperature(temperature)
-    @temperature = Random.new.rand(temperature-5..temperature+5).round(1)
+  def set_temperature
+    @temperature = generate.random_value(TEMP_MIN, TEMP_MAX, TEMP_ROUND)
+  end
+
+  def update_temperature(range)
+    @temperature = generate.random_value(temperature - range, temperature + range, TEMP_ROUND)
   end
 end

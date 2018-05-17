@@ -14,12 +14,12 @@ class Inventory
 
   def make_sale(consumers)
     cups_sold = [consumers, cups].min # returns the maximum number of cups sold (either the lowest amount of paying consumers or the amount of cups for sale)
-    @funds += cups_sold * @lemonade_price
+    @funds += cups_sold * @lemonade_price # might not need the @ here on this attr_assessor symbols
     @cups = 0
   end
 
   def make_lemonade(quantity)
-    # TODO: make this a service by using an object 
+    # TODO: make this a service by using an object
     @sugar -= quantity
     @lemons -= quantity
     @cups += quantity
@@ -41,7 +41,7 @@ class Inventory
     #   @sugar_price
     # else "Can't find #{item}"
     # end
-    if item.eql?('lemon')
+    if item.eql?('lemon') # use constants, i also prefer the case statement - it is used thoughout the app
       @lemon_price
     elsif item.eql?('sugar')
       @sugar_price
@@ -54,10 +54,12 @@ class Inventory
     case item
 
     when 'lemon'
+      # repeat
       @lemons += quantity
       @funds -= @lemon_price * quantity
       @lemon_costs = @lemon_price * quantity
     when 'sugar'
+      # repeat
       @sugar += quantity
       @funds -= @sugar_price * quantity
       @sugar_costs = @sugar_price * quantity
@@ -66,7 +68,8 @@ class Inventory
   end
 
   def purchase_shits(object)
-    # Do shits with the object and return
+    # Do shits with the object and return ???
+    # refactor purchase-lemon and sugars to use this purchase_shits
   end
 
   def purchase_lemons(quantity)

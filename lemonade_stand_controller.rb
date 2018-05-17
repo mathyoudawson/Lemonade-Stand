@@ -5,12 +5,16 @@ class LemonadeStandController
 
   def initialize
     @game = LemonadeStand.new
-    #play_game
+  end
+
+  def set_game_conditions
+    game.initialize_climate
+    game.set_market_prices
   end
 
   def play_game
     while game.funds?
-      game.set_market_prices
+      set_game_conditions
       game.purchase('lemon')
       game.purchase('sugar')
       game.make_lemonade

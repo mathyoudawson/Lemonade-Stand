@@ -9,24 +9,25 @@ require_relative 'climate.rb'
 require_relative 'population.rb'
 
 class LemonadeStand
+  attr_reader :inventory, :validation, :user_output, :day_counter, :population
+  attr_accessor :climate
+
   def initialize
     @inventory = Inventory.new
     @validation = Validation.new
     @user_output = UserOutput.new
     @climate = Climate.new
-    @temperature = @climate.generate_initial_temperature
     @day_counter = 1
     @population = Population.new
   end
 
-  # def validate_user_input(user_input)
-  #   until user_input.match?(/^\d+$/)
-  #     puts "enter valid input"
-  #     user_input = retrieve_input
-  #   end
+  def initialize_climate
+    climate.set_temperature
+  end
 
-  #   user_input
-  # end
+  def update_temperature
+    climate.update_temperature(5)
+  end
 
   def retrieve_input
     user_input = gets.chomp
@@ -52,30 +53,6 @@ class LemonadeStand
     @inventory.purchase(item, quantity)
   end
 
-  def purchase_shits(ingredient) end
-
-  def purchase_lemons
-    maximum_lemons = (@inventory.funds / @inventory.lemon_price).round(2)
-    @user_output.purchase_lemons_output(@inventory.lemon_price, maximum_lemons)
-    quantity = retrieve_input
-    until @validation.can_afford?(@inventory.funds, @inventory.lemon_price, quantity)
-      @user_output.cant_afford('many lemons')
-      quantity = retrieve_input
-    end
-    @inventory.purchase_lemons(quantity)
-  end
-
-  def purchase_sugar
-    maximum_sugar = (@inventory.funds / @inventory.sugar_price).round(2)
-    @user_output.purchase_sugar_output(@inventory.sugar_price, maximum_sugar)
-    quantity = retrieve_input
-    until @validation.can_afford?(@inventory.funds, @inventory.sugar_price, quantity)
-      @user_output.cant_afford('much sugar')
-      quantity = retrieve_input
-    end
-    @inventory.purchase_sugar(quantity)
-  end
-
   def make_lemonade
     maximum_cups = [@inventory.lemons, @inventory.sugar].min
     @user_output.make_lemonade_output(maximum_cups)
@@ -92,7 +69,7 @@ class LemonadeStand
   end
 
   def set_market_prices
-    @user_output.start_of_day_output(@inventory.funds, @inventory.lemons, @inventory.sugar, @climate.temperature, @day_counter)
+    @user_output.start_of_day_output(@inventory.funds, @inventory.lemons, @inventory.sugar, climate.temperature, @day_counter)
     @inventory.set_lemon_price
     @inventory.set_sugar_price
   end
@@ -105,12 +82,8 @@ class LemonadeStand
     @inventory.get_opening_funds
   end
 
-  def update_temperature
-    @climate.generate_new_temperature(@temperature)
-  end
-
   def generate_population
-    @population.generate_population(@temperature)
+    @population.generate_population(climate.temperature)
   end
 
   def sell_lemonade
@@ -118,6 +91,10 @@ class LemonadeStand
     @inventory.make_sale(consumers)
     @user_output.end_of_day_output(@day_counter.to_s, @population.population_counter.to_s, consumers)
     @day_counter += 1
+  end
+
+  def generate_random_value(min, max, round)
+    Random.new.rand(min..max).round(round)
   end
 
   def calculate_profit
