@@ -8,7 +8,7 @@ class Climate
   attr_accessor :temperature, :generate
 
   def initialize(generate: RandomGenerator::Generate.new)
-    @generate = generate #RandomGenerator::Generate.new
+    @generate = generate
   end
 
   def set_temperature
